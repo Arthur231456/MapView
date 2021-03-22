@@ -1,5 +1,7 @@
 import sys
 import requests
+from PyQt5.QtCore import Qt
+
 from data.form import Ui_MainWindow as UW
 from PIL import Image
 from PyQt5 import uic
@@ -63,9 +65,19 @@ class Window(QtWidgets.QMainWindow, UW):
     def refresh_map(self):
         self.map.setPixmap(self.get_map())
 
-    def keyPressEvent(self, a0: QtGui.QKeyEvent):
-        spn0 = float(self.spn.split(",")[0])
-        spn1 = float(self.spn.split(",")[1])
+    def keyPressEvent(self, event):
+        x = float(self.ll.split(",")[0])
+        y = float(self.ll.split(",")[1])
+        if event.key() == Qt.Key_Down:
+            y -= 0.01
+        elif event.key() == Qt.Key_Up:
+            y += 0.01
+        elif event.key() == Qt.Key_Right:
+            x += 0.01
+        elif event.key() == Qt.Key_Left:
+            x -= 0.01
+        self.ll = str(x) + "," + str(y)
+        self.refresh_map()
 
 
 def except_hook(cls, exception, traceback):

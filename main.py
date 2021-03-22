@@ -24,7 +24,6 @@ class Window(QtWidgets.QMainWindow, UW):
         self.max_spn = [2, 2]
         self.min_spn = [0.00001, 0.00001]
         self.spn = self.get_map_spn()
-
         self.img = f"{DATA_DIR}/map.png"
         self.refresh_map()
 
@@ -71,9 +70,18 @@ class Window(QtWidgets.QMainWindow, UW):
     def refresh_map(self):
         self.map.setPixmap(self.get_map())
 
-    # смотрим не нажата ли клавиша
-    # если нажата то либо увеличиваем, либо уменьшаем область карты
     def keyPressEvent(self, event):
+        x = float(self.ll.split(",")[0])
+        y = float(self.ll.split(",")[1])
+        if event.key() == Qt.Key_Down:
+            y -= 0.01
+        elif event.key() == Qt.Key_Up:
+            y += 0.01
+        elif event.key() == Qt.Key_Right:
+            x += 0.01
+        elif event.key() == Qt.Key_Left:
+            x -= 0.01
+        self.ll = str(x) + "," + str(y)
         spn0 = float(self.spn.split(",")[0])
         spn1 = float(self.spn.split(",")[1])
         if event.key() == Qt.Key_PageUp:

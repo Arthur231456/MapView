@@ -76,10 +76,10 @@ class Window(QtWidgets.QMainWindow, UW):
     def keyPressEvent(self, event):
         spn0 = float(self.spn.split(",")[0])
         spn1 = float(self.spn.split(",")[1])
-        if event.key() == Qt.Key_Up:
+        if event.key() == Qt.Key_PageUp:
             spn0 -= 0.25 * spn0 if spn0 > self.min_spn[0] + 0.25 * spn0 else 0
             spn1 -= 0.25 * spn1 if spn1 > self.min_spn[1] + 0.25 * spn1 else 0
-        elif event.key() == Qt.Key_Down:
+        elif event.key() == Qt.Key_PageDown:
             spn0 += 0.25 * spn0 if spn0 < self.max_spn[0] - 0.25 * spn0 else 0
             spn1 += 0.25 * spn1 if spn1 < self.min_spn[1] - 0.25 * spn1 else 0
         self.spn = str(spn0) + "," + str(spn1)

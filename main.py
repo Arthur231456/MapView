@@ -1,5 +1,7 @@
 import sys
 import requests
+from PyQt5.QtCore import Qt
+
 from data.form import Ui_MainWindow as UW
 from PIL import Image
 from PyQt5 import uic
@@ -19,7 +21,10 @@ class Window(QtWidgets.QMainWindow, UW):
         super().__init__()
         self.setupUi(self)
         self.ll = "54.04,54.1"
+        self.max_spn = [2, 2]
+        self.min_spn = [0.00001, 0.00001]
         self.spn = self.get_map_spn()
+
         self.img = f"{DATA_DIR}/map.png"
         self.refresh_map()
 
@@ -36,6 +41,7 @@ class Window(QtWidgets.QMainWindow, UW):
         pxm = QtGui.QPixmap(self.img)
         return pxm
 
+    # получаем размеры карты
     def get_map_spn(self):
         gp = {
             "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
@@ -49,6 +55,8 @@ class Window(QtWidgets.QMainWindow, UW):
         sp0 = abs(list(map(float, sp["lowerCorner"].split()))[0] - list(map(float, sp["upperCorner"].split()))[0])
         sp1 = abs(list(map(float, sp["lowerCorner"].split()))[1] - list(map(float, sp["upperCorner"].split()))[1])
         self.spn = str(sp0) + "," + str(sp1)
+        self.max_spn = [sp0 + 2, sp1 + 2]
+        self.min_spn = [sp0 * 0.0001, sp1 * 0.0001]
         return self.spn
 
     # получаем параметры карты
@@ -63,9 +71,19 @@ class Window(QtWidgets.QMainWindow, UW):
     def refresh_map(self):
         self.map.setPixmap(self.get_map())
 
-    def keyPressEvent(self, a0: QtGui.QKeyEvent):
+    # смотрим не нажата ли клавиша
+    # если нажата то либо увеличиваем, либо уменьшаем область карты
+    def keyPressEvent(self, event):
         spn0 = float(self.spn.split(",")[0])
         spn1 = float(self.spn.split(",")[1])
+        if event.key() == Qt.Key_Up:
+            spn0 -= 0.25 * spn0 if spn0 > self.min_spn[0] + 0.25 * spn0 else 0
+            spn1 -= 0.25 * spn1 if spn1 > self.min_spn[1] + 0.25 * spn1 else 0
+        elif event.key() == Qt.Key_Down:
+            spn0 += 0.25 * spn0 if spn0 < self.max_spn[0] - 0.25 * spn0 else 0
+            spn1 += 0.25 * spn1 if spn1 < self.min_spn[1] - 0.25 * spn1 else 0
+        self.spn = str(spn0) + "," + str(spn1)
+        self.refresh_map()
 
 
 def except_hook(cls, exception, traceback):

@@ -20,12 +20,20 @@ class Window(QtWidgets.QMainWindow, UW):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setStyleSheet("background-color: #eeeeee")
         self.ll = "54.04,54.1"
+        self.l = "map"
+        self.pt = None
         self.max_spn = [2, 2]
         self.min_spn = [0.00001, 0.00001]
         self.spn = self.get_map_spn()
         self.img = f"{DATA_DIR}/map.png"
         self.refresh_map()
+        self.pushButton.clicked.connect(self.search_object)
+        self.sch.clicked.connect(self.change_map)
+        self.sat.clicked.connect(self.change_map)
+        self.skl.clicked.connect(self.change_map)
+        self.sch.click()
 
     # получаем карту
     def get_map(self):
@@ -41,10 +49,12 @@ class Window(QtWidgets.QMainWindow, UW):
         return pxm
 
     # получаем размеры карты
-    def get_map_spn(self):
+    def get_map_spn(self, geocode=None):
+        if not geocode:
+            geocode = self.ll
         gp = {
             "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
-            "geocode": self.ll,
+            "geocode": geocode,
             "format": "json"}
         res = requests.get(GEOCODER_API_SERVER, params=gp)
         if not res:
@@ -62,14 +72,18 @@ class Window(QtWidgets.QMainWindow, UW):
     def get_params(self):
         params = {"spn": self.spn,
                   "ll": self.ll,
-                  "l": "map",
-                  "size": "640,450"
+                  "l": self.l,
+                  "size": "640,450",
                   }
+        if self.pt:
+            params["pt"] = self.pt
         return params
 
     def refresh_map(self):
         self.map.setPixmap(self.get_map())
 
+    # проверяем не неажата ли кнопка
+    # если если нажата, то выполняем соответствующее действие
     def keyPressEvent(self, event):
         x = float(self.ll.split(",")[0])
         y = float(self.ll.split(",")[1])
@@ -92,6 +106,40 @@ class Window(QtWidgets.QMainWindow, UW):
             spn1 += 0.25 * spn1 if spn1 < self.min_spn[1] - 0.25 * spn1 else 0
         self.spn = str(spn0) + "," + str(spn1)
         self.refresh_map()
+
+    # меняем вид карты
+    def change_map(self):
+        if self.sch.isChecked():
+            self.l = "map"
+        elif self.skl.isChecked():
+            self.l = "skl"
+        else:
+            self.l = "sat"
+        self.refresh_map()
+
+    def search_object(self):
+        text = self.lineEdit.text()
+        if not text:
+            return 0
+        params = {
+            "geocode": text,
+            "format": "json",
+            "apikey": "40d1649f-0493-4b70-98ba-98533de7710b"
+        }
+        res = requests.get(GEOCODER_API_SERVER, params=params)
+        if res:
+            js = res.json()
+            if js["response"]["GeoObjectCollection"]["featureMember"]:
+                tp = js["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+                cord = tp["Point"]["pos"]
+                self.ll = ",".join(cord.split(" "))
+                self.spn = self.get_map_spn(geocode=text)
+                self.pt = f"{self.ll},pm2rdm"
+                self.refresh_map()
+            else:
+                self.lineEdit.setText(f"No results")
+        else:
+            self.lineEdit.setText(f"Error {res.status_code}")
 
 
 def except_hook(cls, exception, traceback):

@@ -112,7 +112,7 @@ class Window(QtWidgets.QMainWindow, UW):
         if self.sch.isChecked():
             self.l = "map"
         elif self.skl.isChecked():
-            self.l = "skl"
+            self.l = "sat,skl"
         else:
             self.l = "sat"
         self.refresh_map()

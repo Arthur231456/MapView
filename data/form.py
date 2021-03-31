@@ -41,6 +41,10 @@ class Ui_MainWindow(object):
         self.clr_btn = QtWidgets.QPushButton(self.centralwidget)
         self.clr_btn.setGeometry(QtCore.QRect(640, 40, 75, 23))
         self.clr_btn.setObjectName("clr_btn")
+        self.address = QtWidgets.QLabel(self.centralwidget)
+        self.address.setGeometry(QtCore.QRect(170, 40, 461, 20))
+        self.address.setText("")
+        self.address.setObjectName("address")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)

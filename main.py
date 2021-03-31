@@ -133,6 +133,7 @@ class Window(QtWidgets.QMainWindow, UW):
             if js["response"]["GeoObjectCollection"]["featureMember"]:
                 tp = js["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
                 cord = tp["Point"]["pos"]
+                self.address.setText(tp["metaDataProperty"]["GeocoderMetaData"]["text"])
                 self.ll = ",".join(cord.split(" "))
                 self.spn = self.get_map_spn(geocode=text)
                 self.pt = f"{self.ll},pm2rdm"
@@ -144,6 +145,7 @@ class Window(QtWidgets.QMainWindow, UW):
 
     def clear_src(self):
         self.pt = False
+        self.address.setText("")
         self.refresh_map()
 
 

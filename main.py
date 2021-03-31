@@ -33,6 +33,7 @@ class Window(QtWidgets.QMainWindow, UW):
         self.sch.clicked.connect(self.change_map)
         self.sat.clicked.connect(self.change_map)
         self.skl.clicked.connect(self.change_map)
+        self.clr_btn.clicked.connect(self.clear_src)
         self.sch.click()
 
     # получаем карту
@@ -88,13 +89,13 @@ class Window(QtWidgets.QMainWindow, UW):
         x = float(self.ll.split(",")[0])
         y = float(self.ll.split(",")[1])
         if event.key() == Qt.Key_Down:
-            y -= 0.01
+            y -= 0.01 * float(self.spn.split(",")[0])
         elif event.key() == Qt.Key_Up:
-            y += 0.01
+            y += 0.01 * float(self.spn.split(",")[0])
         elif event.key() == Qt.Key_Right:
-            x += 0.01
+            x += 0.01 * float(self.spn.split(",")[0])
         elif event.key() == Qt.Key_Left:
-            x -= 0.01
+            x -= 0.01 * float(self.spn.split(",")[0])
         self.ll = str(x) + "," + str(y)
         spn0 = float(self.spn.split(",")[0])
         spn1 = float(self.spn.split(",")[1])
@@ -140,6 +141,10 @@ class Window(QtWidgets.QMainWindow, UW):
                 self.lineEdit.setText(f"No results")
         else:
             self.lineEdit.setText(f"Error {res.status_code}")
+
+    def clear_src(self):
+        self.pt = False
+        self.refresh_map()
 
 
 def except_hook(cls, exception, traceback):

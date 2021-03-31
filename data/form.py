@@ -38,6 +38,9 @@ class Ui_MainWindow(object):
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(80, 90, 61, 23))
         self.pushButton_2.setObjectName("pushButton_2")
+        self.clr_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.clr_btn.setGeometry(QtCore.QRect(640, 40, 75, 23))
+        self.clr_btn.setObjectName("clr_btn")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -45,9 +48,10 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MapView", "MapView"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.sch.setText(_translate("MainWindow", "Схема"))
         self.sat.setText(_translate("MainWindow", "Спутник"))
         self.skl.setText(_translate("MainWindow", "Гибрид"))
         self.pushButton.setText(_translate("MainWindow", "Найти"))
         self.pushButton_2.setText(_translate("MainWindow", "Ок"))
+        self.clr_btn.setText(_translate("MainWindow", "Сброс"))

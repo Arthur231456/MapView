@@ -45,6 +45,9 @@ class Ui_MainWindow(object):
         self.address.setGeometry(QtCore.QRect(170, 40, 461, 20))
         self.address.setText("")
         self.address.setObjectName("address")
+        self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox.setGeometry(QtCore.QRect(640, 80, 111, 17))
+        self.checkBox.setObjectName("checkBox")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -59,3 +62,4 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Найти"))
         self.pushButton_2.setText(_translate("MainWindow", "Ок"))
         self.clr_btn.setText(_translate("MainWindow", "Сброс"))
+        self.checkBox.setText(_translate("MainWindow", "Индекс объекта"))

@@ -133,7 +133,14 @@ class Window(QtWidgets.QMainWindow, UW):
             if js["response"]["GeoObjectCollection"]["featureMember"]:
                 tp = js["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
                 cord = tp["Point"]["pos"]
-                self.address.setText(tp["metaDataProperty"]["GeocoderMetaData"]["text"])
+                address = tp["metaDataProperty"]["GeocoderMetaData"]["text"]
+                index = ""
+                try:
+                    if self.checkBox.isChecked():
+                        index = ", " + tp["metaDataProperty"]["GeocoderMetaData"]["Address"]["postal_code"]
+                except Exception:
+                    pass
+                self.address.setText(address + index)
                 self.ll = ",".join(cord.split(" "))
                 self.spn = self.get_map_spn(geocode=text)
                 self.pt = f"{self.ll},pm2rdm"

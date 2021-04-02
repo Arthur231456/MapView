@@ -28,12 +28,15 @@ class Window(QtWidgets.QMainWindow, UW):
         self.min_spn = [0.00001, 0.00001]
         self.spn = self.get_map_spn()
         self.img = f"{DATA_DIR}/map.png"
+        self.adr = ""
+        self.index = ""
         self.refresh_map()
         self.pushButton.clicked.connect(self.search_object)
         self.sch.clicked.connect(self.change_map)
         self.sat.clicked.connect(self.change_map)
         self.skl.clicked.connect(self.change_map)
         self.clr_btn.clicked.connect(self.clear_src)
+        self.checkBox.clicked.connect(self.index_event)
         self.sch.click()
 
     # получаем карту
@@ -133,14 +136,12 @@ class Window(QtWidgets.QMainWindow, UW):
             if js["response"]["GeoObjectCollection"]["featureMember"]:
                 tp = js["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
                 cord = tp["Point"]["pos"]
-                address = tp["metaDataProperty"]["GeocoderMetaData"]["text"]
-                index = ""
+                self.adr = tp["metaDataProperty"]["GeocoderMetaData"]["text"]
                 try:
-                    if self.checkBox.isChecked():
-                        index = ", " + tp["metaDataProperty"]["GeocoderMetaData"]["Address"]["postal_code"]
+                    self.index = ", " + tp["metaDataProperty"]["GeocoderMetaData"]["Address"]["postal_code"]
                 except Exception:
                     pass
-                self.address.setText(address + index)
+                self.index_event()
                 self.ll = ",".join(cord.split(" "))
                 self.spn = self.get_map_spn(geocode=text)
                 self.pt = f"{self.ll},pm2rdm"
@@ -154,6 +155,12 @@ class Window(QtWidgets.QMainWindow, UW):
         self.pt = False
         self.address.setText("")
         self.refresh_map()
+
+    def index_event(self):
+        ind = ""
+        if self.checkBox.isChecked():
+            ind = self.index
+        self.address.setText(self.adr + ind)
 
 
 def except_hook(cls, exception, traceback):
